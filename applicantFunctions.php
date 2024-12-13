@@ -21,15 +21,13 @@ function createApplicant($firstName, $lastName, $yearsOfService, $rank, $special
     }
 }
 
-function searchApplicants($searchTerm) {
+function searchApplicants($firstName, $lastName) {
     global $pdo;
-    $query = "SELECT * FROM law_enforcement_applicants WHERE firstName LIKE ? OR lastName LIKE ? OR yearsOfService LIKE ? OR rank LIKE ? OR specialization LIKE ? OR preferredAssignment LIKE ?";
+    $query = "SELECT * FROM law_enforcement_applicants WHERE firstName LIKE ? AND lastName LIKE ?";
     $stmt = $pdo->prepare($query);
 
     try {
-        $stmt->execute([
-            "%$searchTerm%", "%$searchTerm%", "%$searchTerm%", "%$searchTerm%", "%$searchTerm%", "%$searchTerm%"
-        ]);
+        $stmt->execute(["%$firstName%", "%$lastName%"]);
         $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
         return [
             "message" => "Search completed successfully.",
@@ -43,6 +41,7 @@ function searchApplicants($searchTerm) {
         ];
     }
 }
+
 
 function getAllApplicants() {
     global $pdo;
